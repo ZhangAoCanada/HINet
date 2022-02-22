@@ -261,6 +261,7 @@ def main():
                 use_image = opt['val'].get('use_image', True)
                 metrics = model.validation(val_loader, current_iter, tb_logger,
                                  opt['val']['save_img'], rgb2bgr, use_image )
+                writer.add_scalar("Validation/Metrics", metrics, current_iter)
 
             data_time = time.time()
             iter_time = time.time()

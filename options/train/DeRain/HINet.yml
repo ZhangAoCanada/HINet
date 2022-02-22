@@ -52,6 +52,8 @@ network_g:
 
 # path
 path:
+  models: logs/models
+  training_states: logs/training_states
   pretrain_network_g: ~
   strict_load_g: true
   resume_state: ~
@@ -83,7 +85,7 @@ train:
 val:
 #  val_freq: 10
 #  val_freq: !!float 2.5e4
-  val_freq: !!float 2e4
+  val_freq: 200
   save_img: false
   grids: true
   crop_size: 256
@@ -98,7 +100,7 @@ val:
 # logging settings
 logger:
   print_freq: 200
-  save_checkpoint_freq: !!float 2e4
+  save_checkpoint_freq: 200
   use_tb_logger: true
   wandb:
     project: ~
