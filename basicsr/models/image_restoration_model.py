@@ -242,6 +242,7 @@ class ImageRestorationModel(BaseModel):
 
 
         self.log_dict = self.reduce_loss_dict(loss_dict)
+        return l_total
 
     def test(self):
         self.net_g.eval()

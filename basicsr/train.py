@@ -24,6 +24,8 @@ from basicsr.utils import (MessageLogger, check_resume, get_env_info,
 from basicsr.utils.dist_util import get_dist_info, init_dist
 from basicsr.utils.options import dict2str, parse
 
+from torch.utils.tensorboard import SummaryWriter
+
 
 def parse_options(is_train=True):
     parser = argparse.ArgumentParser()
@@ -212,6 +214,11 @@ def main():
     data_time, iter_time = time.time(), time.time()
     start_time = time.time()
 
+    log_dir = "./logs"
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
+    writer = SummaryWriter(log_dir)
+
     # for epoch in range(start_epoch, total_epochs + 1):
     epoch = start_epoch
     while current_iter <= total_iters:
@@ -230,11 +237,12 @@ def main():
                 current_iter, warmup_iter=opt['train'].get('warmup_iter', -1))
             # training
             model.feed_data(train_data)
-            model.optimize_parameters(current_iter)
+            l_total = model.optimize_parameters(current_iter)
             iter_time = time.time() - iter_time
             # log
+            writer.add_scalar('Loss/Train', l_total.item(), current_iter)
             if current_iter % opt['logger']['print_freq'] == 0:
-                log_vars = {'epoch': epoch, 'iter': current_iter}
+                log_vars = {'epoch': epoch, 'iter': current_iter, 'loss_val':l_total.item()}
                 log_vars.update({'lrs': model.get_current_learning_rate()})
                 log_vars.update({'time': iter_time, 'data_time': data_time})
                 log_vars.update(model.get_current_log())
@@ -251,7 +259,7 @@ def main():
                 rgb2bgr = opt['val'].get('rgb2bgr', True)
                 # wheather use uint8 image to compute metrics
                 use_image = opt['val'].get('use_image', True)
-                model.validation(val_loader, current_iter, tb_logger,
+                metrics = model.validation(val_loader, current_iter, tb_logger,
                                  opt['val']['save_img'], rgb2bgr, use_image )
 
             data_time = time.time()

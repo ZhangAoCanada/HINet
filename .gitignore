@@ -6,3 +6,8 @@ datasets/SIDD/
 experiments/
 results/
 .idea/
+.eggs/
+basicsr/version.py
+basicsr.egg-info/
+tb_logger/
+
