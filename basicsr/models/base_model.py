@@ -206,7 +206,6 @@ class BaseModel():
             current_iter = 'latest'
         save_filename = f'{net_label}_{current_iter}.pth'
         save_path = os.path.join(self.opt['path']['models'], save_filename)
-        print("[DEBUG] ", save_path)
 
         net = net if isinstance(net, list) else [net]
         param_key = param_key if isinstance(param_key, list) else [param_key]
@@ -310,7 +309,6 @@ class BaseModel():
             save_filename = f'{current_iter}.state'
             save_path = os.path.join(self.opt['path']['training_states'],
                                      save_filename)
-            print("[DEBUG] ", save_path)
             torch.save(state, save_path)
 
     def resume_training(self, resume_state):
