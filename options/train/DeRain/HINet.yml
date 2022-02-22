@@ -100,7 +100,7 @@ val:
 # logging settings
 logger:
   print_freq: 200
-  save_checkpoint_freq: 200
+  save_checkpoint_freq: 2
   use_tb_logger: true
   wandb:
     project: ~
