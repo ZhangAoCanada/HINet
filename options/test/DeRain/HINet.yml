@@ -15,11 +15,11 @@ manual_seed: 10
 datasets:
 
   test:
-    name: DeRain_train
+    name: DeRain_test
     type: PairedImageDataset
 
-    dataroot_gt: /mnt/d/DATASET/Derain_DATA/test/gt
-    dataroot_lq: /mnt/d/DATASET/Derain_DATA/test/data
+    dataroot_gt: /content/drive/MyDrive/DERAIN/test/gt
+    dataroot_lq: /content/drive/MyDrive/DERAIN/test/data
 
     io_backend:
       type: disk
