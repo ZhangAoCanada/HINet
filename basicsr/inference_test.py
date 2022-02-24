@@ -90,6 +90,7 @@ def inference(model, dataloader, opt, current_iter,
                     opt['path']['visualization'], dataset_name,
                     f'{img_name}_gt.png')
                 
+            print("[DEBUG] ", save_img_path)
             imwrite(sr_img, save_img_path)
             imwrite(gt_img, save_gt_img_path)
 
@@ -125,7 +126,7 @@ def inference(model, dataloader, opt, current_iter,
         print(log_str)
     
     average_inference_time = sum(all_inference_time) / len(all_inference_time)
-    print("[Average Inference Time]: ", average_inference_time)
+    print("[Average Inference Time]: {:.4f} ms".format(average_inference_time * 1000))
 
     return current_metric
 
