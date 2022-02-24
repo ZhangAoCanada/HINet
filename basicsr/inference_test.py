@@ -4,6 +4,8 @@
 # Modified from BasicSR (https://github.com/xinntao/BasicSR)
 # Copyright 2018-2020 BasicSR Authors
 # ------------------------------------------------------------------------
+import sys
+sys.path.append("/content/drive/MyDrive/DERAIN/HINet")
 import importlib
 import logging
 from unittest import TestLoader
