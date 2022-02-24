@@ -23,6 +23,7 @@ from tqdm import tqdm
 from copy import deepcopy
 import time, cv2
 from skimage.measure import compare_psnr, compare_ssim
+import numpy as np
 
 
 # ----------------- from TransWeather ------------------
@@ -58,6 +59,8 @@ def inference(model, dataloader, opt, current_iter,
     pbar = tqdm(total=len(dataloader), unit='image')
 
     all_inference_time = []
+    psnr_list = []
+    ssim_list = []
 
     cnt = 0
 
@@ -82,16 +85,14 @@ def inference(model, dataloader, opt, current_iter,
         all_inference_time.append(time.time() - start_time)
 
         sr_img = tensor2img([visuals['result']], rgb2bgr=rgb2bgr)
-        if 'gt' in visuals:
-            gt_img = tensor2img([visuals['gt']], rgb2bgr=rgb2bgr)
-            del model.gt
+        # if 'gt' in visuals:
+        gt_img = tensor2img([visuals['gt']], rgb2bgr=rgb2bgr)
+        del model.gt
 
         # tentative for out of GPU memory
         del model.lq
         del model.output
         torch.cuda.empty_cache()
-        print(sr_img.shape, sr_img.max(), sr_img.min())
-        print(gt_img.shape, gt_img.max(), gt_img.min())
 
         if save_img:
             
@@ -115,20 +116,26 @@ def inference(model, dataloader, opt, current_iter,
                 
             imwrite(sr_img, save_img_path)
             # imwrite(gt_img, save_gt_img_path)
+        
+        # if with_metrics:
+        #     # calculate metrics
+        #     opt_metric = deepcopy(opt['val']['metrics'])
+        #     if use_image:
+        #         for name, opt_ in opt_metric.items():
+        #             metric_type = opt_.pop('type')
+        #             metric_results[name] += getattr(
+        #                 metric_module, metric_type)(sr_img, gt_img, **opt_)
+        #     else:
+        #         for name, opt_ in opt_metric.items():
+        #             metric_type = opt_.pop('type')
+        #             metric_results[name] += getattr(
+        #                 metric_module, metric_type)(visuals['result'], visuals['gt'], **opt_)
 
-        if with_metrics:
-            # calculate metrics
-            opt_metric = deepcopy(opt['val']['metrics'])
-            if use_image:
-                for name, opt_ in opt_metric.items():
-                    metric_type = opt_.pop('type')
-                    metric_results[name] += getattr(
-                        metric_module, metric_type)(sr_img, gt_img, **opt_)
-            else:
-                for name, opt_ in opt_metric.items():
-                    metric_type = opt_.pop('type')
-                    metric_results[name] += getattr(
-                        metric_module, metric_type)(visuals['result'], visuals['gt'], **opt_)
+        # --- Calculate the average PSNR --- #
+        psnr_list.extend(calc_psnr(sr_img, gt_img))
+        # --- Calculate the average SSIM --- #
+        ssim_list.extend(calc_ssim(sr_img, gt_img))
+
 
         pbar.update(1)
         pbar.set_description(f'Test {img_name}')
@@ -138,17 +145,18 @@ def inference(model, dataloader, opt, current_iter,
     pbar.close()
 
     current_metric = 0.
-    if with_metrics:
-        for metric in metric_results.keys():
-            metric_results[metric] /= cnt
-            current_metric = metric_results[metric]
-        log_str = f'Validation {dataset_name},\t'
-        for metric, value in metric_results.items():
-            log_str += f'\t # {metric}: {value:.4f}'
-        print(log_str)
+    # if with_metrics:
+    #     for metric in metric_results.keys():
+    #         metric_results[metric] /= cnt
+    #         current_metric = metric_results[metric]
+    #     log_str = f'Validation {dataset_name},\t'
+    #     for metric, value in metric_results.items():
+    #         log_str += f'\t # {metric}: {value:.4f}'
+    #     print(log_str)
     
-    average_inference_time = sum(all_inference_time) / len(all_inference_time)
-    print("[Average Inference Time]: {:.4f} ms".format(average_inference_time * 1000))
+    avr_psnr = sum(psnr_list) / (len(psnr_list) + 1e-10)
+    avr_ssim = sum(ssim_list) / (len(ssim_list) + 1e-10)
+    print("[RESULTS] PSNR: {:.4f}, SSIM: {:.4f}, Average time: {:.4f} ms".format(avr_psnr, avr_ssim, np.mean(all_inference_time)*1000))
 
     return current_metric
 
