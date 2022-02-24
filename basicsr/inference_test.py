@@ -21,6 +21,7 @@ from basicsr.utils.options import dict2str
 from basicsr.utils import get_root_logger, imwrite, tensor2img
 from tqdm import tqdm
 from copy import deepcopy
+import time
 
 
 def inference(model, dataloader, opt, current_iter, 
@@ -35,6 +36,8 @@ def inference(model, dataloader, opt, current_iter,
         }
     pbar = tqdm(total=len(dataloader), unit='image')
 
+    all_inference_time = []
+
     cnt = 0
 
     for idx, val_data in enumerate(dataloader):
@@ -43,6 +46,7 @@ def inference(model, dataloader, opt, current_iter,
         #     continue
 
         # print('val_data .. ', val_data['lq'].size(), val_data['gt'].size())
+        start_time = time.time()
         model.feed_data(val_data)
         if opt['val'].get('grids', False):
             model.grids()
@@ -53,6 +57,9 @@ def inference(model, dataloader, opt, current_iter,
             model.grids_inverse()
 
         visuals = model.get_current_visuals()
+
+        all_inference_time.append(time.time() - start_time)
+
         sr_img = tensor2img([visuals['result']], rgb2bgr=rgb2bgr)
         if 'gt' in visuals:
             gt_img = tensor2img([visuals['gt']], rgb2bgr=rgb2bgr)
@@ -116,6 +123,9 @@ def inference(model, dataloader, opt, current_iter,
         for metric, value in metric_results.items():
             log_str += f'\t # {metric}: {value:.4f}'
         print(log_str)
+    
+    average_inference_time = sum(all_inference_time) / len(all_inference_time)
+    print("[Average Inference Time]: ", average_inference_time)
 
     return current_metric
 
