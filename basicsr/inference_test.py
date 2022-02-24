@@ -21,7 +21,28 @@ from basicsr.utils.options import dict2str
 from basicsr.utils import get_root_logger, imwrite, tensor2img
 from tqdm import tqdm
 from copy import deepcopy
-import time
+import time, cv2
+from skimage.measure import compare_psnr, compare_ssim
+
+
+# ----------------- from TransWeather ------------------
+def calc_psnr(im1, im2):
+    im1 = im1[0].view(im1.shape[2],im1.shape[3],3).detach().cpu().numpy()
+    im2 = im2[0].view(im2.shape[2],im2.shape[3],3).detach().cpu().numpy()
+    im1_y = cv2.cvtColor(im1, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    im2_y = cv2.cvtColor(im2, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    ans = [compare_psnr(im1_y, im2_y)]
+    return ans
+
+def calc_ssim(im1, im2):
+    im1 = im1[0].view(im1.shape[2],im1.shape[3],3).detach().cpu().numpy()
+    im2 = im2[0].view(im2.shape[2],im2.shape[3],3).detach().cpu().numpy()
+    im1_y = cv2.cvtColor(im1, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    im2_y = cv2.cvtColor(im2, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    ans = [compare_ssim(im1_y, im2_y)]
+    return ans
+# ------------------------------------------------------
+
 
 
 def inference(model, dataloader, opt, current_iter, 
@@ -69,6 +90,8 @@ def inference(model, dataloader, opt, current_iter,
         del model.lq
         del model.output
         torch.cuda.empty_cache()
+        print(sr_img.shape, sr_img.max(), sr_img.min())
+        print(gt_img.shape, gt_img.max(), gt_img.min())
 
         if save_img:
             
@@ -78,21 +101,20 @@ def inference(model, dataloader, opt, current_iter,
                                             img_name,
                                             f'{img_name}_{current_iter}.png')
                 
-                save_gt_img_path = osp.join(opt['path']['visualization'],
-                                            img_name,
-                                            f'{img_name}_{current_iter}_gt.png')
+                # save_gt_img_path = osp.join(opt['path']['visualization'],
+                #                             img_name,
+                #                             f'{img_name}_{current_iter}_gt.png')
             else:
                 
                 save_img_path = osp.join(
                     opt['path']['visualization'], dataset_name,
                     f'{img_name}.png')
-                save_gt_img_path = osp.join(
-                    opt['path']['visualization'], dataset_name,
-                    f'{img_name}_gt.png')
+                # save_gt_img_path = osp.join(
+                #     opt['path']['visualization'], dataset_name,
+                #     f'{img_name}_gt.png')
                 
-            print("[DEBUG] ", save_img_path)
             imwrite(sr_img, save_img_path)
-            imwrite(gt_img, save_gt_img_path)
+            # imwrite(gt_img, save_gt_img_path)
 
         if with_metrics:
             # calculate metrics
