@@ -10,4 +10,4 @@ results/
 basicsr/version.py
 basicsr.egg-info/
 tb_logger/
-
+logs
