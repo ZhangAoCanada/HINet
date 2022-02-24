@@ -123,6 +123,8 @@ def inference(model, dataloader, opt, current_iter,
         #             metric_results[name] += getattr(
         #                 metric_module, metric_type)(visuals['result'], visuals['gt'], **opt_)
 
+        print(sr_img.shape)
+        print(gt_img.shape)
         # --- Calculate the average PSNR --- #
         psnr_list.extend(calc_psnr(sr_img, gt_img))
         # --- Calculate the average SSIM --- #
