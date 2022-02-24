@@ -40,7 +40,7 @@ def inference(model, dataloader, opt, current_iter,
         # if img_name[-1] != '9':
         #     continue
 
-        # print('val_data .. ', val_data['lq'].size(), val_data['gt'].size())
+        print('val_data .. ', val_data['lq'].size(), val_data['gt'].size())
         model.feed_data(val_data)
         if opt['val'].get('grids', False):
             model.grids()
