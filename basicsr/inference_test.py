@@ -28,11 +28,15 @@ import numpy as np
 
 # ----------------- from TransWeather ------------------
 def calc_psnr(im1, im2):
-    ans = [compare_psnr(im1, im2)]
+    im1_y = cv2.cvtColor(im1, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    im2_y = cv2.cvtColor(im2, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    ans = [compare_psnr(im1_y, im2_y)]
     return ans
 
 def calc_ssim(im1, im2):
-    ans = [compare_ssim(im1, im2)]
+    im1_y = cv2.cvtColor(im1, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    im2_y = cv2.cvtColor(im2, cv2.COLOR_BGR2YCR_CB)[:, :, 0]
+    ans = [compare_ssim(im1_y, im2_y)]
     return ans
 # ------------------------------------------------------
 
@@ -123,8 +127,6 @@ def inference(model, dataloader, opt, current_iter,
         #             metric_results[name] += getattr(
         #                 metric_module, metric_type)(visuals['result'], visuals['gt'], **opt_)
 
-        print(sr_img.shape)
-        print(gt_img.shape)
         # --- Calculate the average PSNR --- #
         psnr_list.extend(calc_psnr(sr_img, gt_img))
         # --- Calculate the average SSIM --- #
