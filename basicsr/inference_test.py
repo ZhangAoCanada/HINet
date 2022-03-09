@@ -24,6 +24,7 @@ from copy import deepcopy
 import time, cv2
 from skimage.measure import compare_psnr, compare_ssim
 import numpy as np
+from torchinfo import summary
 
 
 
@@ -192,6 +193,7 @@ def main():
 
     # create model
     model = create_model(opt)
+    summary(model, (1, 3, 512, 512))
 
     for test_loader in test_loaders:
         test_set_name = test_loader.dataset.opt['name']
