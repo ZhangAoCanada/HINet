@@ -192,7 +192,7 @@ def main():
 
     # create model
     model = create_model(opt)
-    summary(model, (1, 3, 720, 480))
+    summary(model, (1, 3, 720, 720))
 
     for test_loader in test_loaders:
         test_set_name = test_loader.dataset.opt['name']
