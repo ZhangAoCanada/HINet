@@ -18,8 +18,8 @@ datasets:
     name: DeRain_test
     type: PairedImageDataset
 
-    dataroot_gt: /content/drive/MyDrive/DERAIN/test/gt
-    dataroot_lq: /content/drive/MyDrive/DERAIN/test/data
+    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_captured/gt
+    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_captured/rain_L
 
     io_backend:
       type: disk
@@ -33,7 +33,7 @@ network_g:
 
 # path
 path:
-  pretrain_network_g: experiments/pretrained_models/net_g_45000.pth
+  pretrain_network_g: experiments/pretrained_models/original_pretrained.pth
   strict_load_g: true
   resume_state: ~
 
