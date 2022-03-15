@@ -247,7 +247,8 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
         basename, ext = osp.splitext(osp.basename(gt_path))
         ### NOTE: change the name to the input name
         ind = re.findall(r'\d+', basename)[0]
-        basename = ind + "_rain"
+        # basename = ind + "_rain"
+        basename = ind 
         input_path = input_paths[idx]
         basename_input, ext_input = osp.splitext(osp.basename(input_path))
         input_name = f'{filename_tmpl.format(basename)}{ext_input}'
