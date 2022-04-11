@@ -178,6 +178,8 @@ def main():
     # create train and validation dataloaders
     result = create_train_val_dataloader(opt, logger)
     train_loader, train_sampler, val_loader, total_epochs, total_iters = result
+    print("=====> number of training images: {}".format(len(train_loader.dataset)))
+    print("=====> number of validation images: {}".format(len(val_loader.dataset)))
 
     # create model
     if resume_state:  # resume training

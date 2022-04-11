@@ -16,8 +16,8 @@ datasets:
   train:
     name: DeRain_train
     type: PairedImageDataset
-    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_captured/gt
-    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_captured/rain_L
+    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220325/train/gt
+    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220325/train
 
     filename_tmpl: '{}'
     io_backend:
@@ -37,8 +37,8 @@ datasets:
   val:
     name: DeRain_train
     type: PairedImageDataset
-    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_captured/gt
-    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_captured/rain_L
+    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220325/validate/gt
+    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220325/validate
     io_backend:
       type: disk
 
