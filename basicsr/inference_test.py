@@ -41,7 +41,6 @@ def calc_ssim(im1, im2):
 # ------------------------------------------------------
 
 
-
 def inference(model, dataloader, opt, current_iter, 
                         save_img=True, rgb2bgr=True, use_image=True):
     metric_module = importlib.import_module('basicsr.metrics')
@@ -62,10 +61,6 @@ def inference(model, dataloader, opt, current_iter,
 
     for idx, val_data in enumerate(dataloader):
         img_name = osp.splitext(osp.basename(val_data['lq_path'][0]))[0]
-        # if img_name[-1] != '9':
-        #     continue
-
-        # print('val_data .. ', val_data['lq'].size(), val_data['gt'].size())
         start_time = time.time()
         model.feed_data(val_data)
         if opt['val'].get('grids', False):
@@ -81,52 +76,25 @@ def inference(model, dataloader, opt, current_iter,
         all_inference_time.append(time.time() - start_time)
 
         sr_img = tensor2img([visuals['result']], rgb2bgr=rgb2bgr)
-        # if 'gt' in visuals:
         gt_img = tensor2img([visuals['gt']], rgb2bgr=rgb2bgr)
         del model.gt
 
-        # tentative for out of GPU memory
         del model.lq
         del model.output
         torch.cuda.empty_cache()
 
         if save_img:
-            
             if opt['is_train']:
-                
                 save_img_path = osp.join(opt['path']['visualization'],
                                             img_name,
                                             f'{img_name}_{current_iter}.png')
-                
-                # save_gt_img_path = osp.join(opt['path']['visualization'],
-                #                             img_name,
-                #                             f'{img_name}_{current_iter}_gt.png')
             else:
-                
                 save_img_path = osp.join(
                     opt['path']['visualization'], dataset_name,
                     f'{img_name}.png')
-                # save_gt_img_path = osp.join(
-                #     opt['path']['visualization'], dataset_name,
-                #     f'{img_name}_gt.png')
                 
             imwrite(sr_img, save_img_path)
-            # imwrite(gt_img, save_gt_img_path)
         
-        # if with_metrics:
-        #     # calculate metrics
-        #     opt_metric = deepcopy(opt['val']['metrics'])
-        #     if use_image:
-        #         for name, opt_ in opt_metric.items():
-        #             metric_type = opt_.pop('type')
-        #             metric_results[name] += getattr(
-        #                 metric_module, metric_type)(sr_img, gt_img, **opt_)
-        #     else:
-        #         for name, opt_ in opt_metric.items():
-        #             metric_type = opt_.pop('type')
-        #             metric_results[name] += getattr(
-        #                 metric_module, metric_type)(visuals['result'], visuals['gt'], **opt_)
-
         # --- Calculate the average PSNR --- #
         psnr_list.extend(calc_psnr(sr_img, gt_img))
         # --- Calculate the average SSIM --- #
@@ -136,19 +104,9 @@ def inference(model, dataloader, opt, current_iter,
         pbar.update(1)
         pbar.set_description(f'Test {img_name}')
         cnt += 1
-        # if cnt == 300:
-        #     break
     pbar.close()
 
     current_metric = 0.
-    # if with_metrics:
-    #     for metric in metric_results.keys():
-    #         metric_results[metric] /= cnt
-    #         current_metric = metric_results[metric]
-    #     log_str = f'Validation {dataset_name},\t'
-    #     for metric, value in metric_results.items():
-    #         log_str += f'\t # {metric}: {value:.4f}'
-    #     print(log_str)
     
     avr_psnr = sum(psnr_list) / (len(psnr_list) + 1e-10)
     avr_ssim = sum(ssim_list) / (len(ssim_list) + 1e-10)
@@ -174,39 +132,43 @@ def main():
     logger.info(get_env_info())
     logger.info(dict2str(opt))
 
-    # create test dataset and dataloader
-    test_loaders = []
-    for phase, dataset_opt in sorted(opt['datasets'].items()):
-        test_set = create_dataset(dataset_opt)
-        test_loader = create_dataloader(
-            test_set,
-            dataset_opt,
-            num_gpu=opt['num_gpu'],
-            dist=opt['dist'],
-            sampler=None,
-            seed=opt['manual_seed'])
-        logger.info(
-            f"Number of test images in {dataset_opt['name']}: {len(test_set)}")
-        test_loaders.append(test_loader)
+    testset_root_dir = opt['datasets']['test']['dataroot_gt']
+    subdirs = ['dawn_cloudy', 'night_outdoors', 'sunny_outdoors', 'underground']
+    input_subs = ['rain_L', 'rain_H']
 
     # create model
     model = create_model(opt)
 
-    for test_loader in test_loaders:
-        test_set_name = test_loader.dataset.opt['name']
-        logger.info(f'Testing {test_set_name}...')
-        rgb2bgr = opt['val'].get('rgb2bgr', True)
-        # wheather use uint8 image to compute metrics
-        use_image = opt['val'].get('use_image', True)
+    for subdir in subdirs:
+        for input_sub in input_subs:
+            print("=====> Currently running: ", subdir, " with ", input_sub)
+            opt['datasets']['test']['dataroot_gt'] = osp.join(testset_root_dir, subdir, 'gt')
+            opt['datasets']['test']['dataroot_lq'] = osp.join(testset_root_dir, subdir, input_sub)
 
-        inference(model, test_loader, opt, opt['name'],
-                        save_img=True, rgb2bgr=True, use_image=True)
-        # model.validation(
-        #     test_loader,
-        #     current_iter=opt['name'],
-        #     tb_logger=None,
-        #     save_img=opt['val']['save_img'],
-        #     rgb2bgr=rgb2bgr, use_image=use_image)
+            # create test dataset and dataloader
+            test_loaders = []
+            for phase, dataset_opt in sorted(opt['datasets'].items()):
+                test_set = create_dataset(dataset_opt)
+                test_loader = create_dataloader(
+                    test_set,
+                    dataset_opt,
+                    num_gpu=opt['num_gpu'],
+                    dist=opt['dist'],
+                    sampler=None,
+                    seed=opt['manual_seed'])
+                logger.info(
+                    f"Number of test images in {dataset_opt['name']}: {len(test_set)}")
+                test_loaders.append(test_loader)
+
+            for test_loader in test_loaders:
+                test_set_name = test_loader.dataset.opt['name']
+                logger.info(f'Testing {test_set_name}...')
+                rgb2bgr = opt['val'].get('rgb2bgr', True)
+                # wheather use uint8 image to compute metrics
+                use_image = opt['val'].get('use_image', True)
+
+                inference(model, test_loader, opt, opt['name'],
+                                save_img=True, rgb2bgr=True, use_image=True)
 
 
 if __name__ == '__main__':
