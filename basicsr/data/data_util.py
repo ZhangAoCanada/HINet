@@ -4,7 +4,7 @@
 # Modified from BasicSR (https://github.com/xinntao/BasicSR)
 # Copyright 2018-2020 BasicSR Authors
 # ------------------------------------------------------------------------
-import cv2
+import cv2, os
 import numpy as np
 import torch
 from os import path as osp
@@ -236,30 +236,70 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
     input_folder, gt_folder = folders
     input_key, gt_key = keys
 
-    input_paths = list(scandir(input_folder))
+    input_paths_L = list(scandir(os.path.join(input_folder, 'rain_L')))
+    input_paths_H = list(scandir(os.path.join(input_folder, 'rain_H')))
     gt_paths = list(scandir(gt_folder))
-    assert len(input_paths) == len(gt_paths), (
+    assert len(input_paths_L) == len(gt_paths), (
         f'{input_key} and {gt_key} datasets have different number of images: '
-        f'{len(input_paths)}, {len(gt_paths)}.')
+        f'{len(input_paths_L)}, {len(gt_paths)}.')
+    assert len(input_paths_H) == len(gt_paths), (
+        f'{input_key} and {gt_key} datasets have different number of images: '
+        f'{len(input_paths_H)}, {len(gt_paths)}.')
     paths = []
     for idx in range(len(gt_paths)):
         gt_path = gt_paths[idx]
         basename, ext = osp.splitext(osp.basename(gt_path))
-        ### NOTE: change the name to the input name
-        ind = re.findall(r'\d+', basename)[0]
-        # basename = ind + "_rain"
-        basename = ind 
-        input_path = input_paths[idx]
+        basename = basename.replace("No_Rain_", "Rain_L_") 
+        input_path = input_paths_L[idx]
         basename_input, ext_input = osp.splitext(osp.basename(input_path))
         input_name = f'{filename_tmpl.format(basename)}{ext_input}'
         input_path = osp.join(input_folder, input_name)
-        assert input_name in input_paths, (f'{input_name} is not in '
+        assert input_name in input_paths_L, (f'{input_name} is not in '
+                                           f'{input_key}_paths.')
+        gt_path = osp.join(gt_folder, gt_path)
+        paths.append(
+            dict([(f'{input_key}_path', input_path),
+                  (f'{gt_key}_path', gt_path)]))
+    for idx in range(len(gt_paths)):
+        gt_path = gt_paths[idx]
+        basename, ext = osp.splitext(osp.basename(gt_path))
+        basename = basename.replace("No_Rain_", "Rain_H_") 
+        input_path = input_paths_H[idx]
+        basename_input, ext_input = osp.splitext(osp.basename(input_path))
+        input_name = f'{filename_tmpl.format(basename)}{ext_input}'
+        input_path = osp.join(input_folder, input_name)
+        assert input_name in input_paths_H, (f'{input_name} is not in '
                                            f'{input_key}_paths.')
         gt_path = osp.join(gt_folder, gt_path)
         paths.append(
             dict([(f'{input_key}_path', input_path),
                   (f'{gt_key}_path', gt_path)]))
     return paths
+
+    # input_paths = list(scandir(input_folder))
+    # gt_paths = list(scandir(gt_folder))
+    # assert len(input_paths) == len(gt_paths), (
+    #     f'{input_key} and {gt_key} datasets have different number of images: '
+    #     f'{len(input_paths)}, {len(gt_paths)}.')
+    # paths = []
+    # for idx in range(len(gt_paths)):
+    #     gt_path = gt_paths[idx]
+    #     basename, ext = osp.splitext(osp.basename(gt_path))
+    #     ### NOTE: change the name to the input name
+    #     ind = re.findall(r'\d+', basename)[0]
+    #     # basename = ind + "_rain"
+    #     basename = ind 
+    #     input_path = input_paths[idx]
+    #     basename_input, ext_input = osp.splitext(osp.basename(input_path))
+    #     input_name = f'{filename_tmpl.format(basename)}{ext_input}'
+    #     input_path = osp.join(input_folder, input_name)
+    #     assert input_name in input_paths, (f'{input_name} is not in '
+    #                                        f'{input_key}_paths.')
+    #     gt_path = osp.join(gt_folder, gt_path)
+    #     paths.append(
+    #         dict([(f'{input_key}_path', input_path),
+    #               (f'{gt_key}_path', gt_path)]))
+    # return paths
 
 
 def paths_from_folder(folder):
