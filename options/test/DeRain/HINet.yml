@@ -18,8 +18,8 @@ datasets:
     name: DeRain_test
     type: PairedImageDataset
 
-    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220325/train/gt
-    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220325/train
+    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220325/test/gt
+    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220325/test
 
     io_backend:
       type: disk

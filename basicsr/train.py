@@ -5,6 +5,7 @@
 # Copyright 2018-2020 BasicSR Authors
 # ------------------------------------------------------------------------
 import argparse
+from cmath import inf
 import datetime
 import logging
 import math
@@ -151,7 +152,8 @@ def main():
 
     resume_state = None
     if len(states) > 0:
-        max_state_file = '{}.state'.format(max([int(x[0:-6]) for x in states]))
+        # max_state_file = '{}.state'.format(max([int(x[0:-6]) for x in states]))
+        max_state_file = 'latest.state'.format(max([int(x[0:-6]) for x in states]))
         resume_state = os.path.join(state_folder_path, max_state_file)
         opt['path']['resume_state'] = resume_state
         print("[RESUME INFO] Resume from {}".format(resume_state))
@@ -222,6 +224,7 @@ def main():
         os.mkdir(log_dir)
     writer = SummaryWriter(log_dir)
 
+    best_metrics = 0
     # for epoch in range(start_epoch, total_epochs + 1):
     epoch = start_epoch
     while current_iter <= total_iters:
@@ -254,7 +257,7 @@ def main():
             # save models and training states
             if current_iter % opt['logger']['save_checkpoint_freq'] == 0:
                 logger.info('Saving models and training states.')
-                model.save(epoch, current_iter)
+                model.save(epoch, current_iter, "latest")
 
             # validation
             if opt.get('val') is not None and (current_iter %
@@ -265,6 +268,9 @@ def main():
                 metrics = model.validation(val_loader, current_iter, tb_logger,
                                  opt['val']['save_img'], rgb2bgr, use_image )
                 writer.add_scalar("Validation/Metrics", metrics, current_iter)
+                if metrics > best_metrics:
+                    best_metrics = metrics
+                    model.save(epoch, current_iter, 'best')
 
             data_time = time.time()
             iter_time = time.time()

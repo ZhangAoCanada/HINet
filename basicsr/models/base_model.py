@@ -192,7 +192,7 @@ class BaseModel():
         ]
 
     @master_only
-    def save_network(self, net, net_label, current_iter, param_key='params'):
+    def save_network(self, net, net_label, current_iter, name="latest", param_key='params'):
         """Save networks.
 
         Args:
@@ -204,7 +204,7 @@ class BaseModel():
         """
         if current_iter == -1:
             current_iter = 'latest'
-        save_filename = f'{net_label}_{current_iter}.pth'
+        save_filename = f'{net_label}_{name}.pth'
         save_path = os.path.join(self.opt['path']['models'], save_filename)
 
         net = net if isinstance(net, list) else [net]
@@ -287,7 +287,7 @@ class BaseModel():
         net.load_state_dict(load_net, strict=strict)
 
     @master_only
-    def save_training_state(self, epoch, current_iter):
+    def save_training_state(self, epoch, current_iter, name):
         """Save training states during training, which will be used for
         resuming.
 
@@ -306,7 +306,7 @@ class BaseModel():
                 state['optimizers'].append(o.state_dict())
             for s in self.schedulers:
                 state['schedulers'].append(s.state_dict())
-            save_filename = f'{current_iter}.state'
+            save_filename = f'{name}.state'
             save_path = os.path.join(self.opt['path']['training_states'],
                                      save_filename)
             torch.save(state, save_path)

@@ -402,6 +402,6 @@ class ImageRestorationModel(BaseModel):
             out_dict['gt'] = self.gt.detach().cpu()
         return out_dict
 
-    def save(self, epoch, current_iter):
-        self.save_network(self.net_g, 'net_g', current_iter)
-        self.save_training_state(epoch, current_iter)
+    def save(self, epoch, current_iter, name):
+        self.save_network(self.net_g, 'net_g', current_iter, name)
+        self.save_training_state(epoch, current_iter, name)
