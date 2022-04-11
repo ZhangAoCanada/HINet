@@ -236,8 +236,10 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
     input_folder, gt_folder = folders
     input_key, gt_key = keys
 
-    input_paths_L = list(scandir(os.path.join(input_folder, 'rain_L')))
-    input_paths_H = list(scandir(os.path.join(input_folder, 'rain_H')))
+    input_folder_L = osp.join(input_folder, 'rain_L')
+    input_folder_H = osp.join(input_folder, 'rain_H')
+    input_paths_L = list(scandir(input_folder_L))
+    input_paths_H = list(scandir(input_folder_H))
     gt_paths = list(scandir(gt_folder))
     assert len(input_paths_L) == len(gt_paths), (
         f'{input_key} and {gt_key} datasets have different number of images: '
@@ -253,7 +255,7 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
         input_path = input_paths_L[idx]
         basename_input, ext_input = osp.splitext(osp.basename(input_path))
         input_name = f'{filename_tmpl.format(basename)}{ext_input}'
-        input_path = osp.join(input_folder, input_name)
+        input_path = osp.join(input_folder_L, input_name)
         assert input_name in input_paths_L, (f'{input_name} is not in '
                                            f'{input_key}_paths.')
         gt_path = osp.join(gt_folder, gt_path)
@@ -267,7 +269,7 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
         input_path = input_paths_H[idx]
         basename_input, ext_input = osp.splitext(osp.basename(input_path))
         input_name = f'{filename_tmpl.format(basename)}{ext_input}'
-        input_path = osp.join(input_folder, input_name)
+        input_path = osp.join(input_folder_H, input_name)
         assert input_name in input_paths_H, (f'{input_name} is not in '
                                            f'{input_key}_paths.')
         gt_path = osp.join(gt_folder, gt_path)
