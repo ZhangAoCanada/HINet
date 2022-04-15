@@ -158,7 +158,7 @@ def main():
         opt['path']['resume_state'] = resume_state
         print("[RESUME INFO] Resume from {}".format(resume_state))
     # load resume states if necessary
-    elif opt['path'].get('resume_state'):
+    if opt['path'].get('resume_state'):
         device_id = torch.cuda.current_device()
         resume_state = torch.load(
             opt['path']['resume_state'],
@@ -185,7 +185,6 @@ def main():
 
     # create model
     if resume_state:  # resume training
-        print("=====> [DEBUG:] ", resume_state)
         check_resume(opt, resume_state['iter'])
         model = create_model(opt)
         model.resume_training(resume_state)  # handle optimizers and schedulers
