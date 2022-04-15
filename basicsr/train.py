@@ -185,7 +185,7 @@ def main():
 
     # create model
     if resume_state:  # resume training
-        print("=====> [DEBUG:] ", resume_state['iter'])
+        print("=====> [DEBUG:] ", resume_state)
         check_resume(opt, resume_state['iter'])
         model = create_model(opt)
         model.resume_training(resume_state)  # handle optimizers and schedulers
