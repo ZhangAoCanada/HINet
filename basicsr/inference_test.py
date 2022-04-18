@@ -144,6 +144,7 @@ def main():
             print("=====> Currently running: ", subdir, " with ", input_sub)
             opt['datasets']['test']['dataroot_gt'] = osp.join(testset_root_dir, subdir, 'gt')
             opt['datasets']['test']['dataroot_lq'] = osp.join(testset_root_dir, subdir, input_sub)
+            opt['datasets']['test']['io_backend']['type'] = 'disk'
 
             # create test dataset and dataloader
             test_loaders = []
