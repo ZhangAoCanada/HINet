@@ -4,6 +4,7 @@
 # Modified from BasicSR (https://github.com/xinntao/BasicSR)
 # Copyright 2018-2020 BasicSR Authors
 # ------------------------------------------------------------------------
+import os
 from torch.utils import data as data
 from torchvision.transforms.functional import normalize
 
@@ -71,9 +72,26 @@ class PairedImageDataset(data.Dataset):
                 [self.lq_folder, self.gt_folder], ['lq', 'gt'],
                 self.opt['meta_info_file'], self.filename_tmpl)
         else:
-            self.paths = paired_paths_from_folder(
-                [self.lq_folder, self.gt_folder], ['lq', 'gt'],
-                self.filename_tmpl)
+            if "rain_L" not in self.lq_folder and "rain_H" not in self.lq_folder:
+                self.lq_folder_tmp = self.lq_folder
+                self.lq_folder_tmp = os.path.join(self.lq_folder_tmp, "rain_L")
+                self.paths = paired_paths_from_folder(
+                    [self.lq_folder_tmp, self.gt_folder], ['lq', 'gt'],
+                    self.filename_tmpl, dir_name="rain_L")
+                self.lq_folder_tmp = self.lq_folder
+                self.lq_folder_tmp = os.path.join(self.lq_folder_tmp, "rain_H")
+                self.paths += paired_paths_from_folder(
+                    [self.lq_folder_tmp, self.gt_folder], ['lq', 'gt'],
+                    self.filename_tmpl, dir_name="rain_H")
+            elif "rain_L" in self.lq_folder:
+                self.paths = paired_paths_from_folder(
+                    [self.lq_folder, self.gt_folder], ['lq', 'gt'],
+                    self.filename_tmpl, dir_name="rain_L")
+            else:
+                self.paths = paired_paths_from_folder(
+                    [self.lq_folder, self.gt_folder], ['lq', 'gt'],
+                    self.filename_tmpl, dir_name="rain_H")
+
 
     def __getitem__(self, index):
         if self.file_client is None:

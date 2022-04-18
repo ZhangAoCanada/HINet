@@ -148,7 +148,6 @@ def main():
             # create test dataset and dataloader
             test_loaders = []
             for phase, dataset_opt in sorted(opt['datasets'].items()):
-                print("========> ", dataset_opt)
                 test_set = create_dataset(dataset_opt)
                 test_loader = create_dataloader(
                     test_set,
@@ -157,6 +156,7 @@ def main():
                     dist=opt['dist'],
                     sampler=None,
                     seed=opt['manual_seed'])
+                print("[INFO] number of images: {}".format(len(test_loader.dataset)))
                 logger.info(
                     f"Number of test images in {dataset_opt['name']}: {len(test_set)}")
                 test_loaders.append(test_loader)

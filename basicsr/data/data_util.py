@@ -4,7 +4,10 @@
 # Modified from BasicSR (https://github.com/xinntao/BasicSR)
 # Copyright 2018-2020 BasicSR Authors
 # ------------------------------------------------------------------------
+from posixpath import dirname
+from sys import prefix
 import cv2, os
+from cv2 import DESCRIPTOR_MATCHER_FLANNBASED
 import numpy as np
 import torch
 from os import path as osp
@@ -212,7 +215,7 @@ def paired_paths_from_meta_info_file(folders, keys, meta_info_file,
     return paths
 
 
-def paired_paths_from_folder(folders, keys, filename_tmpl):
+def paired_paths_from_folder(folders, keys, filename_tmpl, dir_name="rain_L"):
     """Generate paired paths from folders.
 
     Args:
@@ -227,6 +230,8 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
     Returns:
         list[str]: Returned path list.
     """
+    assert dir_name in ["rain_L", "rain_H"]
+    prefix_name = "Rain_L_" if dir_name == "rain_L" else "Rain_H_"
     assert len(folders) == 2, (
         'The len of folders should be 2 with [input_folder, gt_folder]. '
         f'But got {len(folders)}')
@@ -236,41 +241,22 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
     input_folder, gt_folder = folders
     input_key, gt_key = keys
 
-    input_folder_L = osp.join(input_folder, 'rain_L')
-    input_folder_H = osp.join(input_folder, 'rain_H')
-    input_paths_L = list(scandir(input_folder_L))
-    input_paths_H = list(scandir(input_folder_H))
+    input_folder = osp.join(input_folder, dir_name)
+    input_paths = list(scandir(input_folder))
     gt_paths = list(scandir(gt_folder))
-    assert len(input_paths_L) == len(gt_paths), (
+    assert len(input_paths) == len(gt_paths), (
         f'{input_key} and {gt_key} datasets have different number of images: '
-        f'{len(input_paths_L)}, {len(gt_paths)}.')
-    assert len(input_paths_H) == len(gt_paths), (
-        f'{input_key} and {gt_key} datasets have different number of images: '
-        f'{len(input_paths_H)}, {len(gt_paths)}.')
+        f'{len(input_paths)}, {len(gt_paths)}.')
     paths = []
     for idx in range(len(gt_paths)):
         gt_path = gt_paths[idx]
         basename, ext = osp.splitext(osp.basename(gt_path))
-        basename = basename.replace("No_Rain_", "Rain_L_") 
-        input_path = input_paths_L[idx]
+        basename = basename.replace("No_Rain_", prefix_name) 
+        input_path = input_paths[idx]
         basename_input, ext_input = osp.splitext(osp.basename(input_path))
         input_name = f'{filename_tmpl.format(basename)}{ext_input}'
-        input_path = osp.join(input_folder_L, input_name)
-        assert input_name in input_paths_L, (f'{input_name} is not in '
-                                           f'{input_key}_paths.')
-        gt_path = osp.join(gt_folder, gt_path)
-        paths.append(
-            dict([(f'{input_key}_path', input_path),
-                  (f'{gt_key}_path', gt_path)]))
-    for idx in range(len(gt_paths)):
-        gt_path = gt_paths[idx]
-        basename, ext = osp.splitext(osp.basename(gt_path))
-        basename = basename.replace("No_Rain_", "Rain_H_") 
-        input_path = input_paths_H[idx]
-        basename_input, ext_input = osp.splitext(osp.basename(input_path))
-        input_name = f'{filename_tmpl.format(basename)}{ext_input}'
-        input_path = osp.join(input_folder_H, input_name)
-        assert input_name in input_paths_H, (f'{input_name} is not in '
+        input_path = osp.join(input_folder, input_name)
+        assert input_name in input_paths, (f'{input_name} is not in '
                                            f'{input_key}_paths.')
         gt_path = osp.join(gt_folder, gt_path)
         paths.append(
