@@ -73,11 +73,15 @@ class PairedImageDataset(data.Dataset):
                 self.opt['meta_info_file'], self.filename_tmpl)
         else:
             if "rain_L" not in self.lq_folder and "rain_H" not in self.lq_folder:
+                self.lq_folder_tmp = self.lq_folder
+                self.lq_folder_tmp = os.path.join(self.lq_folder_tmp, "rain_L")
                 self.paths = paired_paths_from_folder(
-                    [self.lq_folder, self.gt_folder], ['lq', 'gt'],
+                    [self.lq_folder_tmp, self.gt_folder], ['lq', 'gt'],
                     self.filename_tmpl, dir_name="rain_L")
+                self.lq_folder_tmp = self.lq_folder
+                self.lq_folder_tmp = os.path.join(self.lq_folder_tmp, "rain_H")
                 self.paths += paired_paths_from_folder(
-                    [self.lq_folder, self.gt_folder], ['lq', 'gt'],
+                    [self.lq_folder_tmp, self.gt_folder], ['lq', 'gt'],
                     self.filename_tmpl, dir_name="rain_H")
             elif "rain_L" in self.lq_folder:
                 self.paths = paired_paths_from_folder(

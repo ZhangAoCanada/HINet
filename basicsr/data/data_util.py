@@ -241,7 +241,7 @@ def paired_paths_from_folder(folders, keys, filename_tmpl, dir_name="rain_L"):
     input_folder, gt_folder = folders
     input_key, gt_key = keys
 
-    input_folder = osp.join(input_folder, dir_name)
+    # input_folder = osp.join(input_folder, dir_name)
     input_paths = list(scandir(input_folder))
     gt_paths = list(scandir(gt_folder))
     assert len(input_paths) == len(gt_paths), (
