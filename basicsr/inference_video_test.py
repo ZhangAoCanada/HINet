@@ -174,7 +174,7 @@ def main():
             if not ret:
                 break
             # frame = frame[:, 180:1200, :]
-            frame_tmp = frame_tmp.astype(np.float32) / 255.
+            frame_tmp = frame.copy().astype(np.float32) / 255.
             frame_tensor = img2tensor(frame_tmp, bgr2rgb=True, float32=True)
             input_tensor = {'lq': frame_tensor}
             model.feed_data(input_tensor)
