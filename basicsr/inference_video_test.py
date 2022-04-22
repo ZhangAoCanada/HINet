@@ -137,6 +137,7 @@ def main():
     # make_exp_dirs(opt)
 
     video = cv2.VideoCapture(opt['path']['video_path'])
+    # video_saving = cv2.VideoWriter(opt['path']['output_video_path'],cv2.VideoWriter_fourcc('M','J','P','G'),30,(2040,720))
     video_saving = cv2.VideoWriter(opt['path']['output_video_path'],cv2.VideoWriter_fourcc('M','J','P','G'),30,(2040,720))
 
     # create model
@@ -147,7 +148,8 @@ def main():
             ret, frame = video.read()
             if not ret:
                 break
-            frame = frame[:, 180:1200, :]
+            # frame = frame[:, 180:1200, :]
+            print("===> [debug] ", frame.shape )
             frame_tensor = img2tensor(frame, bgr2rgb=True, float32=True)
             input_tensor = {'lq': frame_tensor}
             model.feed_data(input_tensor)
