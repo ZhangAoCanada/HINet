@@ -149,7 +149,7 @@ def main():
                 break
             frame = frame[:, 180:1200, :]
             frame_tensor = img2tensor(frame, bgr2rgb=True, float32=True)
-            input_tensor = {'lq', frame_tensor}
+            input_tensor = {'lq': frame_tensor}
             model.feed_data(input_tensor)
             model.test()
             visuals = model.get_current_visuals()
