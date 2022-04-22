@@ -23,14 +23,14 @@ datasets:
     io_backend:
       type: disk
 
-    gt_size: 256
+    gt_size: 512
     use_flip: true
     use_rot: true
 
     # data loader
     use_shuffle: true
     num_worker_per_gpu: 8
-    batch_size_per_gpu: 8
+    batch_size_per_gpu: 4
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
@@ -89,8 +89,8 @@ val:
   val_freq: 1000
   save_img: false
   grids: true
-  crop_size: 256
-  max_minibatch: 8
+  crop_size: 512
+  max_minibatch: 4
 
   metrics:
     psnr: # metric name, can be arbitrary

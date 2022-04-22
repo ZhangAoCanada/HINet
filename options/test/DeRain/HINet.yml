@@ -41,7 +41,7 @@ path:
 val:
   save_img: false
   grids: true
-  crop_size: 256
+  crop_size: 512
 
   metrics:
     psnr: # metric name, can be arbitrary
