@@ -18,7 +18,7 @@ from basicsr.train import parse_options
 from basicsr.utils import (get_env_info, get_root_logger, get_time_str,
                            make_exp_dirs)
 from basicsr.utils.options import dict2str
-from basicsr.utils import get_root_logger, imwrite, tensor2img
+from basicsr.utils import get_root_logger, imwrite 
 from tqdm import tqdm
 from copy import deepcopy
 import time, cv2
@@ -134,7 +134,7 @@ def main():
     # torch.backends.cudnn.deterministic = True
 
     # mkdir and initialize loggers
-    make_exp_dirs(opt)
+    # make_exp_dirs(opt)
 
     video = cv2.VideoCapture(opt['path']['video_path'])
     video_saving = cv2.VideoWriter(opt['path']['output_video_path'],cv2.VideoWriter_fourcc('M','J','P','G'),30,(2040,720))
@@ -153,7 +153,7 @@ def main():
             model.feed_data(input_tensor)
             model.test()
             visuals = model.get_current_visuals()
-            pred_image_cpu = tensor2img([visuals['result']], rgb2bgr=rgb2bgr)
+            pred_image_cpu = tensor2img([visuals['result']], rgb2bgr=True)
             pred_image_cpu = cv2.resize(pred_image_cpu, (frame.shape[1],frame.shape[0]))
             image = np.concatenate((frame, pred_image_cpu[..., ::-1]), axis=1)
             video_saving.write(image)
