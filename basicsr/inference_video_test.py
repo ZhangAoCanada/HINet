@@ -28,6 +28,31 @@ from torchvision.utils import make_grid
 import math
 
 
+def imfrombytes(content, flag='color', float32=False):
+    """Read an image from bytes.
+
+    Args:
+        content (bytes): Image bytes got from files or other streams.
+        flag (str): Flags specifying the color type of a loaded image,
+            candidates are `color`, `grayscale` and `unchanged`.
+        float32 (bool): Whether to change to float32., If True, will also norm
+            to [0, 1]. Default: False.
+
+    Returns:
+        ndarray: Loaded image array.
+    """
+    img_np = np.frombuffer(content, np.uint8)
+    imread_flags = {
+        'color': cv2.IMREAD_COLOR,
+        'grayscale': cv2.IMREAD_GRAYSCALE,
+        'unchanged': cv2.IMREAD_UNCHANGED
+    }
+    if img_np is None:
+        raise Exception('None .. !!!')
+    img = cv2.imdecode(img_np, imread_flags[flag])
+    if float32:
+        img = img.astype(np.float32) / 255.
+    return img
 
 
 def img2tensor(imgs, bgr2rgb=True, float32=True):
@@ -149,6 +174,7 @@ def main():
             if not ret:
                 break
             # frame = frame[:, 180:1200, :]
+            frame = frame.astype(np.float32) / 255.
             frame_tensor = img2tensor(frame, bgr2rgb=True, float32=True)
             input_tensor = {'lq': frame_tensor}
             model.feed_data(input_tensor)
