@@ -125,16 +125,16 @@ def tensor2img(tensor, rgb2bgr=True, out_type=np.uint8, min_max=(0, 1)):
                 _tensor, nrow=int(math.sqrt(_tensor.size(0))),
                 normalize=False).numpy()
             img_np = img_np.transpose(1, 2, 0)
-            if rgb2bgr:
-                img_np = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+            # if rgb2bgr:
+            #     img_np = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
         elif n_dim == 3:
             img_np = _tensor.numpy()
             img_np = img_np.transpose(1, 2, 0)
             if img_np.shape[2] == 1:  # gray image
                 img_np = np.squeeze(img_np, axis=2)
-            else:
-                if rgb2bgr:
-                    img_np = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+            # else:
+            #     if rgb2bgr:
+            #         img_np = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
         elif n_dim == 2:
             img_np = _tensor.numpy()
         else:
@@ -147,6 +147,8 @@ def tensor2img(tensor, rgb2bgr=True, out_type=np.uint8, min_max=(0, 1)):
         result.append(img_np)
     if len(result) == 1:
         result = result[0]
+        if rgb2bgr:
+            result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
     return result
 
 
