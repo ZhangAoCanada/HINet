@@ -281,7 +281,7 @@ def main():
     # end of epoch
 
     # consumed_time = str(
-        datetime.timedelta(seconds=int(time.time() - start_time)))
+        # datetime.timedelta(seconds=int(time.time() - start_time)))
     # logger.info(f'End of training. Time consumed: {consumed_time}')
     # logger.info('Save the latest model.')
     # model.save(epoch=-1, current_iter=-1)  # -1 stands for the latest
