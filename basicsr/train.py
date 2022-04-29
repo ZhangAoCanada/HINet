@@ -157,13 +157,13 @@ def main():
         resume_state = os.path.join(state_folder_path, max_state_file)
         opt['path']['resume_state'] = resume_state
         print("[RESUME INFO] Resume from {}".format(resume_state))
-    # load resume states if necessary
-    if opt['path'].get('resume_state'):
-        device_id = torch.cuda.current_device()
-        resume_state = torch.load(
-            opt['path']['resume_state'],
-            map_location=lambda storage, loc: storage.cuda(device_id))
-        print("[RESUME INFO] Resume from {}".format(opt['path']['resume_state']))
+    # # load resume states if necessary
+    # if opt['path'].get('resume_state'):
+    #     device_id = torch.cuda.current_device()
+    #     resume_state = torch.load(
+    #         opt['path']['resume_state'],
+    #         map_location=lambda storage, loc: storage.cuda(device_id))
+    #     print("[RESUME INFO] Resume from {}".format(opt['path']['resume_state']))
     else:
         resume_state = None
 
