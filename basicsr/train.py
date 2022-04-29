@@ -151,12 +151,12 @@ def main():
         states = []
 
     resume_state = None
-    if len(states) > 0:
-        # max_state_file = '{}.state'.format(max([int(x[0:-6]) for x in states]))
-        max_state_file = 'latest.state'
-        resume_state = os.path.join(state_folder_path, max_state_file)
-        opt['path']['resume_state'] = resume_state
-        print("[RESUME INFO] Resume from {}".format(resume_state))
+    # if len(states) > 0:
+    #     # max_state_file = '{}.state'.format(max([int(x[0:-6]) for x in states]))
+    #     max_state_file = 'latest.state'
+    #     resume_state = os.path.join(state_folder_path, max_state_file)
+    #     opt['path']['resume_state'] = resume_state
+    #     print("[RESUME INFO] Resume from {}".format(resume_state))
     # # load resume states if necessary
     # if opt['path'].get('resume_state'):
     #     device_id = torch.cuda.current_device()
@@ -164,8 +164,8 @@ def main():
     #         opt['path']['resume_state'],
     #         map_location=lambda storage, loc: storage.cuda(device_id))
     #     print("[RESUME INFO] Resume from {}".format(opt['path']['resume_state']))
-    else:
-        resume_state = None
+    # else:
+    #     resume_state = None
 
     # mkdir for experiments and logger
     if resume_state is None:
