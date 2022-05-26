@@ -35,7 +35,7 @@ network_g:
 path:
   pretrain_network_g: experiments/DeRain_512/models/net_g_best.pth
   video_path: /content/drive/MyDrive/DERAIN/DATA_captured/something_else/dust_with_water2_video.mp4
-  output_video_path: videos/dust_with_water2_video_result.avi
+  output_video_path: videos/dusty_video1.mp4
   strict_load_g: true
   resume_state: ~
 
