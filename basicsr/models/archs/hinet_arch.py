@@ -46,8 +46,8 @@ class SAM(nn.Module):
 
 class HINet(nn.Module):
 
-    # def __init__(self, in_chn=3, wf=64, depth=5, relu_slope=0.2, hin_position_left=0, hin_position_right=4):
-    def __init__(self, in_chn=3, wf=64, depth=4, relu_slope=0.2, hin_position_left=0, hin_position_right=4):
+    def __init__(self, in_chn=3, wf=64, depth=5, relu_slope=0.2, hin_position_left=0, hin_position_right=4):
+    # def __init__(self, in_chn=3, wf=64, depth=4, relu_slope=0.2, hin_position_left=0, hin_position_right=4):
         super(HINet, self).__init__()
         self.depth = depth
         self.down_path_1 = nn.ModuleList()
