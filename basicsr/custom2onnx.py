@@ -191,7 +191,7 @@ def main():
             pred_image_cpu = tensor2img(pred, rgb2bgr=True)[0]
             pred_image_cpu = cv2.resize(pred_image_cpu, (frame.shape[1],frame.shape[0]))
             image = np.concatenate((frame, pred_image_cpu[..., ::-1]), axis=1)
-            cv2_imshow("image", image)
+            cv2_imshow(image)
 
 
 
