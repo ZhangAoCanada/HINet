@@ -184,7 +184,8 @@ def main():
             # frame = frame[:, 180:1200, :]
             frame_tmp = frame.copy().astype(np.float32) / 255.
             frame_tensor = img2tensor(frame_tmp, bgr2rgb=True, float32=True)
-            frame_tensor.cuda()
+            # input to cuda
+            frame_tensor = frame_tensor.cuda()
             pred = net(frame_tensor)
             # pred = pred.squeeze(0).cpu().numpy()
             pred_image_cpu = tensor2img(pred, rgb2bgr=True)
