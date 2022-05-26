@@ -189,6 +189,7 @@ def main():
             pred = net(frame_tensor)
             # pred = pred.squeeze(0).cpu().numpy()
             pred_image_cpu = tensor2img(pred, rgb2bgr=True)
+            print("====> [INFO] ", pred_image_cpu.shape)
             pred_image_cpu = cv2.resize(pred_image_cpu, (frame.shape[1],frame.shape[0]))
             image = np.concatenate((frame, pred_image_cpu[..., ::-1]), axis=1)
             cv2_imshow("image", image)
