@@ -168,7 +168,7 @@ def main():
     # make_exp_dirs(opt)
 
     video = cv2.VideoCapture(opt['path']['video_path'])
-    video_writer = cv2.VideoWriter("videos/test_video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (640, 480))
+    # video_writer = cv2.VideoWriter("videos/test_video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (640, 480))
 
     # create model
     model = create_model(opt)
@@ -179,26 +179,29 @@ def main():
 
     net.eval()
 
-    with torch.no_grad():
-        while True:
-            ret, frame = video.read()
-            if not ret:
-                break
-            # frame = frame[:, 180:1200, :]
-            frame = cv2.resize(frame, (640, 480))
-            frame_tmp = frame.copy().astype(np.float32) / 255.
-            frame_tensor = img2tensor(frame_tmp, bgr2rgb=True, float32=True)
-            # input to cuda
-            frame_tensor = frame_tensor.cuda()
-            pred = net(frame_tensor)
-            # pred = pred.squeeze(0).cpu().numpy()
-            pred_image_cpu = tensor2img(pred, rgb2bgr=True)[0]
-            pred_image_cpu = cv2.resize(pred_image_cpu, (frame.shape[1],frame.shape[0]))
-            image = np.concatenate((frame, pred_image_cpu[..., ::-1]), axis=1)
-            video_writer.write(image)
+    torch.save(net.state_dict(), "experiments/DeRain_512/models/hinet_naked.pth")
+    print("[FINISHED] HINet naked model saved.")
+
+    # with torch.no_grad():
+    #     while True:
+    #         ret, frame = video.read()
+    #         if not ret:
+    #             break
+    #         # frame = frame[:, 180:1200, :]
+    #         frame = cv2.resize(frame, (640, 480))
+    #         frame_tmp = frame.copy().astype(np.float32) / 255.
+    #         frame_tensor = img2tensor(frame_tmp, bgr2rgb=True, float32=True)
+    #         # input to cuda
+    #         frame_tensor = frame_tensor.cuda()
+    #         pred = net(frame_tensor)
+    #         # pred = pred.squeeze(0).cpu().numpy()
+    #         pred_image_cpu = tensor2img(pred, rgb2bgr=True)[0]
+    #         pred_image_cpu = cv2.resize(pred_image_cpu, (frame.shape[1],frame.shape[0]))
+    #         image = np.concatenate((frame, pred_image_cpu[..., ::-1]), axis=1)
+    #         # video_writer.write(image)
     
-    video.release()
-    video_writer.release()
+    # # video.release()
+    # # video_writer.release()
 
 
 if __name__ == '__main__':
