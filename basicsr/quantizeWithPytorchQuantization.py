@@ -59,7 +59,8 @@ def postprocess(pred):
 
 
 ### NOTE: create data loader ###
-train_data_dir = "/mnt/d/DATASET/DATA_2070/test/"
+# train_data_dir = "/mnt/d/DATASET/DATA_2070/test/"
+train_data_dir = "/content/drive/MyDrive/DERAIN/DATA_20220325/train"
 rain_L_dir = "rain_L"
 rain_H_dir = "rain_H"
 gt_dir = "gt"
@@ -67,19 +68,28 @@ crop_size = [512, 512]
 batch_size = 1
 data_loader = DataLoader(TrainData(crop_size, train_data_dir, rain_L_dir, rain_H_dir, gt_dir), batch_size=batch_size, shuffle=True, num_workers=4)
 
-video_path = "/home/ao/tmp/clip_videos/videos/dusty_video1.mp4"
+# video_path = "/home/ao/tmp/clip_videos/videos/dusty_video1.mp4"
+video_path = "/content/drive/MyDrive/DERAIN/video_data/h97cam_water_video.mp4"
 model_path = "../experiments/DeRain_512/models/hinet_naked.pth"
 
 video = cv2.VideoCapture(video_path)
 
-# device_ids = [Id for Id in range(torch.cuda.device_count())]
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device_ids = [Id for Id in range(torch.cuda.device_count())]
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cpu")
 
 net = HINet()
 
-net.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
-print("====> model ", model_path, " loaded")
+if device == torch.device("cpu"):
+    net.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    print("====> model ", model_path, " loaded")
+else:
+    net.load_state_dict(torch.load(model_path))
+    net.to(device)
+    print("====> model ", model_path, " loaded")
+
+# net.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+# print("====> model ", model_path, " loaded")
 
 net.eval()
 
