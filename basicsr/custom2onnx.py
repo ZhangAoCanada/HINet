@@ -168,7 +168,7 @@ def main():
     # make_exp_dirs(opt)
 
     video = cv2.VideoCapture(opt['path']['video_path'])
-    video_writer = cv2.VideoWriter("./test_video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (640, 480))
+    video_writer = cv2.VideoWriter("videos/test_video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (640, 480))
 
     # create model
     model = create_model(opt)
