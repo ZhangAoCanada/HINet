@@ -29,6 +29,8 @@ import numpy as np
 from torchvision.utils import make_grid
 import math
 
+from hinet_custom import HINet
+
 # from google.colab.patches import cv2_imshow
 
 
@@ -164,23 +166,23 @@ def main():
     torch.backends.cudnn.benchmark = True
     # torch.backends.cudnn.deterministic = True
 
-    # mkdir and initialize loggers
-    # make_exp_dirs(opt)
-
     video = cv2.VideoCapture(opt['path']['video_path'])
-    # video_writer = cv2.VideoWriter("videos/test_video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (640, 480))
 
     # create model
-    model = create_model(opt)
-    net = model.net_g
+    # model = create_model(opt)
+    # net = model.net_g
 
-    # net_path = "experiments/DeRain/models/net_g_best.pth"
-    # net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
+    net = HINet()
+    net_path = "experiments/DeRain_512/models/hinet_naked.pth"
+    net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
     net.eval()
 
-    torch.save(net.state_dict(), "experiments/DeRain_512/models/hinet_naked.pth")
-    print("[FINISHED] HINet naked model saved.")
+    # torch.save(net.state_dict(), "experiments/DeRain_512/models/hinet_naked.pth")
+    # print("[FINISHED] HINet naked model saved.")
+
+    print(net)
+    print("[INFO] HINet naked model loaded.")
 
     # with torch.no_grad():
     #     while True:
