@@ -14,6 +14,7 @@ HINet: Half Instance Normalization Network for Image Restoration
 
 import torch
 import torch.nn as nn
+from torch.quantization import QuantStub, DeQuantStub
 
 def conv3x3(in_chn, out_chn, bias=True):
     layer = nn.Conv2d(in_chn, out_chn, kernel_size=3, stride=1, padding=1, bias=bias)
@@ -77,6 +78,9 @@ class HINet(nn.Module):
         self.cat12 = nn.Conv2d(prev_channels*2, prev_channels, 1, 1, 0)
 
         self.last = conv3x3(prev_channels, in_chn, bias=True)
+        
+        self.quant = QuantStub()
+        self.dequant = DeQuantStub()
     
     def preprocess(self, x):
         x = x.permute(0,3,1,2)
@@ -88,6 +92,7 @@ class HINet(nn.Module):
 
     def forward(self, x):
         x = self.preprocess(x)
+        x = self.quant(x)
         image = x
         #stage 1
         x1 = self.conv_01(image)
@@ -123,6 +128,7 @@ class HINet(nn.Module):
         out_2 = out_2 + image
 
         out_2 = torch.clamp(out_2, 0, 1)
+        out_2 = self.dequant(out_2)
         out_2 = self.postprocess(out_2)
         return out_2
 
@@ -136,6 +142,11 @@ class HINet(nn.Module):
                 nn.init.orthogonal_(m.weight, gain=gain)
                 if not m.bias is None:
                     nn.init.constant_(m.bias, 0)
+    
+    def fuse_model(self):
+        # for m in self.modules():
+            # if type
+        pass
 
 
 class UNetConvBlock(nn.Module):
