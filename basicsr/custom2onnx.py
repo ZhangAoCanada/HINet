@@ -161,12 +161,12 @@ def tensor2img(tensor, rgb2bgr=True, out_type=np.uint8, min_max=(0, 1)):
 
 def main():
     # parse options, set distributed setting, set ramdom seed
-    opt = parse_options(is_train=False)
+    # opt = parse_options(is_train=False)
 
-    torch.backends.cudnn.benchmark = True
+    # torch.backends.cudnn.benchmark = True
     # torch.backends.cudnn.deterministic = True
 
-    video = cv2.VideoCapture(opt['path']['video_path'])
+    # video = cv2.VideoCapture(opt['path']['video_path'])
 
     # create model
     # model = create_model(opt)
