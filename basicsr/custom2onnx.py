@@ -5,6 +5,8 @@
 # Copyright 2018-2020 BasicSR Authors
 # ------------------------------------------------------------------------
 import sys
+
+from cv2 import VideoWriter
 sys.path.append("/content/drive/MyDrive/DERAIN/HINet")
 import importlib
 import logging
@@ -27,7 +29,7 @@ import numpy as np
 from torchvision.utils import make_grid
 import math
 
-from google.colab.patches import cv2_imshow
+# from google.colab.patches import cv2_imshow
 
 
 def imfrombytes(content, flag='color', float32=False):
@@ -166,6 +168,7 @@ def main():
     # make_exp_dirs(opt)
 
     video = cv2.VideoCapture(opt['path']['video_path'])
+    video_writer = cv2.VideoWriter("./test_video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (640, 480))
 
     # create model
     model = create_model(opt)
@@ -182,6 +185,7 @@ def main():
             if not ret:
                 break
             # frame = frame[:, 180:1200, :]
+            frame = cv2.resize(frame, (640, 480))
             frame_tmp = frame.copy().astype(np.float32) / 255.
             frame_tensor = img2tensor(frame_tmp, bgr2rgb=True, float32=True)
             # input to cuda
@@ -191,8 +195,10 @@ def main():
             pred_image_cpu = tensor2img(pred, rgb2bgr=True)[0]
             pred_image_cpu = cv2.resize(pred_image_cpu, (frame.shape[1],frame.shape[0]))
             image = np.concatenate((frame, pred_image_cpu[..., ::-1]), axis=1)
-            cv2_imshow(image)
-
+            video_writer.write(image)
+    
+    video.release()
+    video_writer.release()
 
 
 if __name__ == '__main__':
