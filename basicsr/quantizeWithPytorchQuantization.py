@@ -59,8 +59,8 @@ def postprocess(pred):
 
 
 ### NOTE: create data loader ###
-# train_data_dir = "/mnt/d/DATASET/DATA_2070/test/"
-train_data_dir = "/content/drive/MyDrive/DERAIN/DATA_20220325/train"
+train_data_dir = "/mnt/d/DATASET/DATA_2070/test/"
+# train_data_dir = "/content/drive/MyDrive/DERAIN/DATA_20220325/train"
 rain_L_dir = "rain_L"
 rain_H_dir = "rain_H"
 gt_dir = "gt"
@@ -68,8 +68,8 @@ crop_size = [512, 512]
 batch_size = 1
 data_loader = DataLoader(TrainData(crop_size, train_data_dir, rain_L_dir, rain_H_dir, gt_dir), batch_size=batch_size, shuffle=True, num_workers=4)
 
-# video_path = "/home/ao/tmp/clip_videos/videos/dusty_video1.mp4"
-video_path = "/content/drive/MyDrive/DERAIN/video_data/h97cam_water_video.mp4"
+video_path = "/home/ao/tmp/clip_videos/videos/dusty_video1.mp4"
+# video_path = "/content/drive/MyDrive/DERAIN/video_data/h97cam_water_video.mp4"
 model_path = "../experiments/DeRain_512/models/hinet_naked.pth"
 
 video = cv2.VideoCapture(video_path)
@@ -162,8 +162,7 @@ input_img = sample_image
 input_img = preprocess(input_img)
 
 torch.onnx.export(net, input_img, "../experiments/DeRain_512/models/transweather_quant.onnx", verbose=True, input_names=['input'], output_names=['output'], opset_version=13)
-# torch.onnx.export(net, input_img, "./ckpt/transweather_quant.onnx", verbose=True, input_names=['input'], output_names=['output'], opset_version=14, enable_onnx_checker=False)
-# torch.onnx.export(net, input_img, "./ckpt/transweather_quant.onnx", verbose=True, input_names=['input'], output_names=['output'], opset_version=13, enable_onnx_checker=False,dynamic_axes={'input': {0, 'batch_size'}, 'output': {0, 'batch_size'}})
+# torch.onnx.export(net, input_img, "./ckpt/transweather_quant.onnx", verbose=True, input_names=['input'], output_names=['output'], opset_version=13, enable_onnx_checker=False)
 
 print("[FINISHED] onnx model exported")
 

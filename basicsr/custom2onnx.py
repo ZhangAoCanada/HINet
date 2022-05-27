@@ -51,7 +51,9 @@ def postprocess(pred):
 
 
 def main():
-    video = cv2.VideoCapture("/home/ao/tmp/clip_videos/videos/dusty_video1.mp4")
+    # video_path = "/home/ao/tmp/clip_videos/videos/dusty_video1.mp4"
+    video_path = "/content/drive/MyDrive/DERAIN/DATA_captured/something_else/dust_with_water2_video.mp4"
+    video = cv2.VideoCapture(video_path)
 
     net = HINet()
     net_path = "../experiments/DeRain_512/models/hinet_naked.pth"
