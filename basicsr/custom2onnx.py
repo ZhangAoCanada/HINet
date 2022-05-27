@@ -173,7 +173,7 @@ def main():
     # net = model.net_g
 
     net = HINet()
-    net_path = "experiments/DeRain_512/models/hinet_naked.pth"
+    net_path = "../experiments/DeRain_512/models/hinet_naked.pth"
     net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
     net.eval()
