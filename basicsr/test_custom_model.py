@@ -23,13 +23,16 @@ def preprocessImage(input_img):
     return input_img
 
 
-model = onnx.load("../experiments/DeRain_512/models/hinet.onnx")
+
+# model_path = "../experiments/DeRain_512/models/hinet.onnx"
+model_path = "../experiments/DeRain_512/models/hinet.quant.onnx"
+model = onnx.load(model_path)
 onnx.checker.check_model(model)
 
 video_path = "/home/ao/tmp/clip_videos/h97cam_water_video.mp4"
 cap = cv2.VideoCapture(video_path)
 
-ort_session = ort.InferenceSession("../experiments/DeRain_512/models/hinet.onnx")
+ort_session = ort.InferenceSession(model_path)
 
 total_inference_time = 0
 count = 0

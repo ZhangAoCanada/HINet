@@ -16,8 +16,8 @@ datasets:
   train:
     name: DeRain_train
     type: PairedImageDataset
-    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220325/train/gt
-    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220325/train
+    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220531/train/gt
+    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220531/train
 
     filename_tmpl: '{}'
     io_backend:
@@ -37,8 +37,8 @@ datasets:
   val:
     name: DeRain_train
     type: PairedImageDataset
-    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220325/validate/gt
-    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220325/validate
+    dataroot_gt: /content/drive/MyDrive/DERAIN/DATA_20220531/validate/gt
+    dataroot_lq: /content/drive/MyDrive/DERAIN/DATA_20220531/validate
     io_backend:
       type: disk
 
@@ -54,8 +54,8 @@ network_g:
 path:
   models: logs/models
   training_states: logs/training_states
-  pretrain_network_g: ~
-  # pretrain_network_g: experiments/pretrained_models/trained.pth
+  # pretrain_network_g: ~
+  pretrain_network_g: experiments/pretrained_models/pretrained_on_data2070.pth
   strict_load_g: true
   resume_state: ~
 

@@ -145,9 +145,9 @@ class HINet(nn.Module):
     
     def fuse_model(self):
         # for m in self.modules():
-            # if type
-        pass
-
+        #     if type(m) == UNetConvBlock:
+        #         torch.quantization.fuse_modules(m, ['conv_2', 'relu_2'], inplace=True)
+        return
 
 class UNetConvBlock(nn.Module):
     def __init__(self, in_size, out_size, downsample, relu_slope, use_csff=False, use_HIN=False):
