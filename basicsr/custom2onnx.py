@@ -38,7 +38,7 @@ from hinet_custom import HINet
 def preprocess(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = np.expand_dims(image, axis=0)
-    image = torch.from_numpy(image.astype(np.float16) / 255.0)
+    image = torch.from_numpy(image.astype(np.float32) / 255.0)
     return image
 
 
@@ -57,8 +57,7 @@ def main():
 
     net = HINet()
     net_path = "../experiments/hinet_naked.pth"
-    # net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
-    net.load_state_dict(torch.load(net_path))
+    net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
     net.eval()
 
@@ -71,7 +70,7 @@ def main():
             if not ret:
                 break
             # frame = frame[:, 180:1200, :]
-            frame = cv2.resize(frame, (640, 368))
+            frame = cv2.resize(frame, (640, 480))
             input_image = frame.copy()
             input_image = preprocess(input_image)
             # pred = net(input_image)
@@ -82,10 +81,6 @@ def main():
             # if cv2.waitKey(1) == 27: break
             sample_image = input_image
             break
-    
-    # enable fp16 conversion
-
-    net = net.half()
     
     torch.onnx.export(net, sample_image, "../experiments/hinet.onnx", verbose=True, input_names=["input"], output_names=["output"], opset_version=11)
 
