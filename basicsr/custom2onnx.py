@@ -70,7 +70,7 @@ def main():
             if not ret:
                 break
             # frame = frame[:, 180:1200, :]
-            frame = cv2.resize(frame, (640, 480))
+            frame = cv2.resize(frame, (640, 368))
             input_image = frame.copy()
             input_image = preprocess(input_image)
             # pred = net(input_image)
