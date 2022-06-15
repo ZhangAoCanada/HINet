@@ -56,7 +56,7 @@ def main():
     video = cv2.VideoCapture(video_path)
 
     net = HINet()
-    net_path = "../experiments/pretrained_models/pretrained_on_data2070.pth"
+    net_path = "../experiments/DeRain/models/net_g_best.pth"
     net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
     net.eval()
