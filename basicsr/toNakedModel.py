@@ -170,7 +170,8 @@ def main():
     # create model
     model = create_model(opt)
     net = model.net_g
-    torch.save(net.state_dict(), "../experiments/hinet_naked.pth")
+    torch.save(net.state_dict(), "experiments/hinet_naked.pth")
+    print("[FINISHED] model naked saved")
 
 
 
