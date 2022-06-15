@@ -163,9 +163,9 @@ def main():
     # mkdir and initialize loggers
     # make_exp_dirs(opt)
 
-    video = cv2.VideoCapture(opt['path']['video_path'])
+    # video = cv2.VideoCapture(opt['path']['video_path'])
     # video_saving = cv2.VideoWriter(opt['path']['output_video_path'],cv2.VideoWriter_fourcc('M','J','P','G'),30,(2040,720))
-    video_saving = cv2.VideoWriter(opt['path']['output_video_path'],cv2.VideoWriter_fourcc('M','J','P','G'),30,(2560,720))
+    # video_saving = cv2.VideoWriter(opt['path']['output_video_path'],cv2.VideoWriter_fourcc('M','J','P','G'),30,(2560,720))
 
     # create model
     model = create_model(opt)
