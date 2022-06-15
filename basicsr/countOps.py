@@ -32,6 +32,8 @@ import math
 
 from hinet_custom import HINet
 
+from ptflops import get_model_complexity_info
+
 # from google.colab.patches import cv2_imshow
 
 
@@ -56,13 +58,10 @@ def main():
     video = cv2.VideoCapture(video_path)
 
     net = HINet()
-    net_path = "../experiments/pretrained_models/pretrained_on_data2070.pth"
+    net_path = "../experiments/DeRain_512/models/hinet_naked.pth"
     net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
     net.eval()
-
-    print(net)
-    print("[INFO] HINet naked model loaded.")
 
     with torch.no_grad():
         while True:
@@ -70,7 +69,7 @@ def main():
             if not ret:
                 break
             # frame = frame[:, 180:1200, :]
-            frame = cv2.resize(frame, (640, 368))
+            frame = cv2.resize(frame, (640, 480))
             input_image = frame.copy()
             input_image = preprocess(input_image)
             # pred = net(input_image)
@@ -82,10 +81,10 @@ def main():
             sample_image = input_image
             break
     
-    torch.onnx.export(net, sample_image, "../experiments/hinet.onnx", verbose=True, input_names=["input"], output_names=["output"], opset_version=11)
-
-    print("[FINISHED] HINet onnx model exported.")
-
+    macs, params = get_model_complexity_info(net, (480, 640, 3), as_strings=True,
+                                           print_per_layer_stat=True, verbose=True)
+    print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
+    print('{:<30}  {:<8}'.format('Number of parameters: ', params)) 
     
 
 
