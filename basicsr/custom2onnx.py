@@ -38,7 +38,7 @@ from hinet_custom import HINet
 def preprocess(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = np.expand_dims(image, axis=0)
-    image = torch.from_numpy(image.astype(np.float32) / 255.0)
+    image = torch.from_numpy(image.astype(np.float16) / 255.0)
     return image
 
 
