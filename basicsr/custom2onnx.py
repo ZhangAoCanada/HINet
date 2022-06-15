@@ -82,6 +82,10 @@ def main():
             sample_image = input_image
             break
     
+    # enable fp16 conversion
+
+    net = net.half()
+    
     torch.onnx.export(net, sample_image, "../experiments/hinet.onnx", verbose=True, input_names=["input"], output_names=["output"], opset_version=11)
 
     print("[FINISHED] HINet onnx model exported.")
