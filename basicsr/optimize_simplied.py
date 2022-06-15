@@ -13,7 +13,10 @@ from onnxmltools.utils import float16_converter
 
 onnx_model = onnx.load("../experiments/hinet.onnx")
 onnx_model = float16_converter.convert_float_to_float16(onnx_model,keep_io_types=True)
-model_simp, check = simplify(onnx_model)
-assert check, "Simplified ONNX model could not be validated"
+
+# model_simp, check = simplify(onnx_model)
+# assert check, "Simplified ONNX model could not be validated"
+model_simp = onnx_model
+
 new_model = onnxoptimizer.optimize(model_simp)
 onnx.save(new_model, "../experiments/hinet_simoptimized.onnx")
