@@ -57,7 +57,8 @@ def main():
 
     net = HINet()
     net_path = "../experiments/hinet_naked.pth"
-    net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
+    # net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
+    net.load_state_dict(torch.load(net_path))
 
     net.eval()
 
