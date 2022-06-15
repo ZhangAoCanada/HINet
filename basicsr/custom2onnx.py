@@ -38,7 +38,8 @@ from hinet_custom import HINet
 def preprocess(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = np.expand_dims(image, axis=0)
-    image = torch.from_numpy(image.astype(np.float32) / 255.0)
+    # image = torch.from_numpy(image.astype(np.float32) / 255.0)
+    image = torch.from_numpy(image.astype(np.float16) / 255.0)
     return image
 
 
@@ -59,8 +60,8 @@ def main():
     net_path = "../experiments/hinet_naked.pth"
     net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
-    net.eval()
     net = net.half()
+    net.eval()
 
     print(net)
     print("[INFO] HINet naked model loaded.")
