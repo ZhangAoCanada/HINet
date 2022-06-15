@@ -60,6 +60,7 @@ def main():
     net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
     net.eval()
+    net = net.half()
 
     print(net)
     print("[INFO] HINet naked model loaded.")
