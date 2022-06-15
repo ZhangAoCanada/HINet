@@ -60,7 +60,7 @@ def main():
     net_path = "../experiments/hinet_naked.pth"
     net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
-    net = net.half()
+    # net = net.half()
     net.eval()
 
     print(net)
