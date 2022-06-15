@@ -56,9 +56,8 @@ def main():
     video = cv2.VideoCapture(video_path)
 
     net = HINet()
-    net_path = "../experiments/DeRain/models/net_g_best.pth"
-    # net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
-    net.load_state_dict(torch.load(net_path))
+    net_path = "../experiments/hinet_naked.pth"
+    net.load_state_dict(torch.load(net_path, map_location=torch.device('cpu')))
 
     net.eval()
 
@@ -71,7 +70,7 @@ def main():
             if not ret:
                 break
             # frame = frame[:, 180:1200, :]
-            frame = cv2.resize(frame, (640, 368))
+            frame = cv2.resize(frame, (640, 480))
             input_image = frame.copy()
             input_image = preprocess(input_image)
             # pred = net(input_image)
