@@ -33,7 +33,7 @@ network_g:
 
 # path
 path:
-  pretrain_network_g: experiments/DeRain_512/models/net_g_best.pth
+  pretrain_network_g: experiments/DeRain/models/net_g_best.pth
   strict_load_g: true
   resume_state: ~
 
